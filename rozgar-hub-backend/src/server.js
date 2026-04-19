@@ -97,9 +97,14 @@ const app    = express();
 const server = http.createServer(app);
 
 // Socket.io Setup
+
+
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://rozgar-hub-9ywqpotnw-mahrukh-bashirs-projects.vercel.app"
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -131,8 +136,19 @@ app.use(helmet({
 }));
 
 // CORS
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://rozgar-hub-9ywqpotnw-mahrukh-bashirs-projects.vercel.app"
+];
+
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   credentials: true,
 }));
